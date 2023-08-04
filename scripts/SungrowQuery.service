@@ -1,0 +1,18 @@
+#Contents of /etc/systemd/system/SungrowQuery.service
+#systemctl daemon-reload
+#systemctl enable SungrowQuery.service
+#systemctl start SungrowQuery.service
+
+[Unit]
+Description=Sungrow Query
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/opt/SungrowQuery/SungrowQuery.py /opt/SungrowQuery/SungrowQuery.config
+Restart=on-failure
+RestartSec=5s
+
+
+[Install]
+WantedBy=multi-user.target

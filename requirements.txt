@@ -1,0 +1,5 @@
+
+pyserial==3.5
+smllib==1.2
+configobj==5.0.8
+paho-mqtt==1.6.1

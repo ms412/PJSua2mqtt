@@ -1,0 +1,1 @@
+Sungrow Invert to share operational state with mqtt. data query performed by websocket
