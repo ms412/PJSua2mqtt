@@ -28,4 +28,4 @@ if __name__ == '__main__':
     x = outerclass()
     x.init()
     x.funcOut()
-    x.innerclass.funcIn()
+    x.innerclass().funcIn()

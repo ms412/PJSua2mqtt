@@ -1,0 +1,18 @@
+#Contents of /etc/systemd/system/sip2mqtt.service
+#systemctl daemon-reload
+#systemctl enable sip2mqtt.service
+#systemctl start sip2mqtt.service
+
+[Unit]
+Description=Sip to Mqtt Gateway
+After=multi-user.target
+
+[Service]
+Type=idle
+ExecStart=/opt/sip2mqtt/sip2mqtt.py /opt/sip2mqtt/sip2mqtt.config
+Restart=on-failure
+RestartSec=5s
+
+
+[Install]
+WantedBy=multi-user.target

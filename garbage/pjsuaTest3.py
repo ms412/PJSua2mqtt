@@ -107,6 +107,7 @@ def enumLocalMedia(ep):
             med_info.portId, med_info.name, med_info.format.channelCount))
 
 
+def makeCall(id)
 def main():
     ep = None
     try:

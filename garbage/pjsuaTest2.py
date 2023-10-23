@@ -1,9 +1,46 @@
 
-
+from datetime import datetime
 import pjsua2 as pj
 import time
 
+global isquit
+isquit = False
 # https://github.com/efficacy38/pjsua2-test/blob/main/audioSimularity/client/client.py
+def quitPJSUA():
+    isquit = True
+
+def sleep4PJSUA2(t):
+    """sleep for a perid time, it takes care of pjsua2's threading,
+    if the isquit is True, this function would immediately quit.
+
+    Args:
+        t (int): The time(second) you wants to sleep.
+            if t equal -1, then it would sleep forever.
+    """
+
+    global isquit
+
+    start = datetime.now()
+    end = start
+    while True:
+        end = datetime.now()
+        if ((end - start).total_seconds() >= t and t != -1) or isquit:
+            print('Down')
+            break
+        pj.Endpoint.instance().libHandleEvents(20)
+
+    return (end - start).total_seconds()
+
+def handleErr(e: pj.Error, stopImmed=True):
+    """handle the error, it would print pj error and exit the PJSUA
+        Args:
+            e: pj.Error
+            stopImmed (Float): whether you wants to stop immediately, default is True
+    """
+    print("Exception {}\r\n, Traceback:\r\n".format(e.info()))
+   # traceback.print_exception(*sys.exc_info())
+    if stopImmed:
+        quitPJSUA()
 
 class MyAccount(pj.Account):
     def onRegState(self, prm):
@@ -136,7 +173,29 @@ class Call(pj.Call):
     #    print("id: {}, name: {}, format(channelCount): {}".format(
      #       med_info.portId, med_info.name, med_info.format.channelCount))
 
-def main():
+
+def makeCall(ep,acc,id):
+    call = Call(acc)
+    prm = pj.CallOpParam(True)
+    prm.opt.audioCount = 1
+    prm.opt.videoCount = 0
+    call.makeCall(id, prm)
+
+    # hangup all call after the time we specified at args(sec)
+    sleep4PJSUA2(15)
+    # time.sleep(10)
+    # start = time.time()
+    # end = start + 10
+    # print(time.time())
+    # while True:
+    #    ep.libHandleEvents(10)
+    # while True:
+    #    if end > time.time():
+    #       pj.Endpoint.instance().libHandleEvents(20)
+
+
+    del call
+def account():
     ep = None
 
     # init the lib
@@ -181,32 +240,34 @@ def main():
     # use null device as conference bridge, instead of local sound card
     pj.Endpoint.instance().audDevManager().setNullDev()
 
-    calls=['sip:0795678728@192.168.2.1:5060']
+    calls=['sip:0795678728@192.168.2.1:5060','sip:0795678728@192.168.2.1:5060','sip:0795678728@192.168.2.1:5060']
     for item in calls:
-        call = Call(acc)
-        prm = pj.CallOpParam(True)
-        prm.opt.audioCount = 1
-        prm.opt.videoCount = 0
-        call.makeCall(item, prm)
+        makeCall(ep,acc,item)
+        #call = Call(acc)
+        #prm = pj.CallOpParam(True)
+        #prm.opt.audioCount = 1
+        #prm.opt.videoCount = 0
+        #call.makeCall(item, prm)
 
         # hangup all call after the time we specified at args(sec)
-        #sleep4PJSUA2(args.callTime)
-        start = time.time()
-        end = start + 10
-        print(time.time())
-        while True:
-            ep.libHandleEvents(10)
+       # sleep4PJSUA2(15)
+       # time.sleep(10)
+       # start = time.time()
+       # end = start + 10
+       # print(time.time())
+       # while True:
+        #    ep.libHandleEvents(10)
        # while True:
         #    if end > time.time():
          #       pj.Endpoint.instance().libHandleEvents(20)
-        ep.hangupAllCalls()
+        #ep.hangupAllCalls()
 
-        del call
+        #del call
     print("*** PJSUA2 SHUTTING DOWN ***")
     del acc
 
     print("\nPress ENTER to quit")
-    sys.stdin.readline()
+  #  sys.stdin.readline()
 
 
 # close the library
@@ -216,4 +277,4 @@ def main():
         print("catch exception!!, exception error is: {}".format(e.info()))
 
 if __name__ == '__main__':
-    main()
+    account()

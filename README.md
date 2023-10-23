@@ -1,1 +1,2 @@
-Sungrow Invert to share operational state with mqtt. data query performed by websocket
+sip2mqtt Gateway
+make calls with message and receive caller id
